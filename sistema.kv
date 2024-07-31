@@ -1,0 +1,253 @@
+WindowManager:
+    Login:
+    Cadastro:
+    Cadastro_Cliente:
+    Cadastro_Fornecedor:
+    Cliente:
+    Fornecedor:
+
+
+    
+
+<TextInput>
+    multiline: False
+    halign: 'center'
+    padding_y: 20
+    size_hint : .8,0.5
+    font_size: 22
+    #size: 600,100
+    pos_hint:{'center_x':0.5}
+
+
+
+<ButtonRounded@Button>
+    background_normal: ""
+    background_color: (0,0,0,0)
+    size_hint: (.3,.3)   
+    canvas.before:
+        Color:
+            rgba:(48/255,84/255,150/255,1)
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [10]
+<Cadastro>:
+    name:"cadastro"
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width,root.height
+        spacing: 20
+        padding: 10
+        
+        Label:
+            text: "Escolha a forma que deseja interagir com a plataforma."
+    
+        FloatLayout:
+            ButtonRounded:
+                text: "Cliente"
+                on_release: 
+                    app.root.current = "cadastro_cliente"
+                    root.manager.transition.direction = "up"
+                pos_hint: {"x":0.18, "top":1}
+                
+
+            ButtonRounded:
+                text: "Fornecedor"
+                pos_hint: {"x":0.51, "top":1}
+                on_release: 
+                    app.root.current = "cadastro_fornecedor"
+                    root.manager.transition.direction = "up"
+        
+            ButtonRounded:
+                text: "Voltar"
+                pos_hint: {"x":0.34, "top":0}
+                on_release: 
+                    app.root.current = "login"
+                    root.manager.transition.direction = "down"
+        Label:
+            
+
+
+    
+
+<Cadastro_Fornecedor>:
+    name: "cadastro_fornecedor"
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width,root.height
+        spacing: 20
+        padding: 10
+
+        Label:
+            size_hint:1,0.1
+
+        TextInput:
+            id: empresa_cadastro
+            hint_text: "Nome da Empresa"
+            padding: (0,10)
+            size_hint: .8,.2
+            font_size: 18
+        TextInput:
+            id: empresa_senha_cadastro
+            hint_text: "Crie sua senha"
+            size_hint: .8,.2
+            font_size: 18
+            padding: (0,10)
+        TextInput:
+            id: categoria_cadastro
+            hint_text: "Categoria"
+            size_hint: .8,.2
+            font_size: 18
+            padding: (0,10)
+        TextInput:
+            id: cnpj_cadastro
+            hint_text: "Digite o CNPJ"
+            size_hint: .8,.2
+            font_size: 18
+            padding: (0,10)
+        FloatLayout:
+            ButtonRounded:
+                text: "Cadastro"
+                pos_hint: {"center_x":0.35, "top":1}
+                on_press: root.apertou()
+            ButtonRounded:
+                text: "Voltar"
+                pos_hint: {"x":0.52, "top":1}
+                on_release: 
+                    app.root.current = "cadastro"
+                    root.manager.transition.direction = "down"
+            Label:
+                id: label_fornecedor
+            
+    
+<Cadastro_Cliente>:
+    name: "cadastro_cliente"
+
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width,root.height
+        spacing: 20
+        padding: 10
+
+        Label:
+            size_hint:1,0.1
+
+        TextInput:
+            id: usuario_cadastro
+            hint_text: "Crie seu usuário"
+            padding: (0,10)
+            size_hint: .8,.2
+            font_size: 18
+        TextInput:
+            id: senha_cadastro
+            hint_text: "Crie sua senha"
+            size_hint: .8,.2
+            font_size: 18
+            padding: (0,10)
+        TextInput:
+            id: cpf_cadastro
+            hint_text: "Digite seu CPF"
+            size_hint: .8,.2
+            font_size: 18
+            padding: (0,10)
+        TextInput:
+            id: email_cadastro
+            hint_text: "Digite seu email"
+            size_hint: .8,.2
+            font_size: 18
+            padding: (0,10)
+        
+        ButtonRounded:
+            id:botao_cadastro
+            text: "Cadastro"
+            pos_hint: {"center_x":0.5, "top":0.5}
+            on_press: root.apertou()
+        
+        ButtonRounded:
+            text: "Voltar"
+            pos_hint: {"x":0.35, "top":1}
+            on_release: 
+                app.root.current = "cadastro"
+                root.manager.transition.direction = "down"
+        Label:
+            id: label_cliente
+            size_hint:1,0.1  
+
+
+        
+
+
+
+<Login>:
+    name: "login"
+    
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width,root.height
+        spacing: 10
+        padding: 5
+
+        Label:
+            size_hint: (1,.2)
+            text: "Projeto 1"
+
+        TextInput:
+            id: usuario
+            hint_text: "Usuário"
+        TextInput:
+            id: senha
+            hint_text: "Senha"
+            password: True
+
+
+        FloatLayout:
+            ButtonRounded:
+                text: "Cadastro"
+                on_release: 
+                    app.root.current = "cadastro"
+                    root.manager.transition.direction = "up"
+                pos_hint: {"x":0.18, "top":1}
+                
+
+            ButtonRounded:
+                text: "Entrar"
+                pos_hint: {"x":0.51, "top":1}
+                on_press: root.entrar()
+            
+            ButtonRounded:
+                text: "Esqueceu"
+                pos_hint:{'x': 0.35, "top": 0.5}      
+        
+        FloatLayout:
+            Label:
+                text: "Marque aqui para Fornecedor"
+                size_hint: (None, None)
+                size: self.texture_size
+                pos_hint: {"center_x": 0.4, "center_y": 0.5}
+
+            CheckBox:
+                id: box
+                size_hint: (None, None)
+                size: (50, 50)
+                pos_hint: {"center_x": 0.6, "center_y": 0.5}
+                                
+                
+            
+        
+        Label:
+            text: "Login"
+       
+<Cliente>:
+    name: 'cliente'
+    BoxLayout:
+        Label:
+            id: mensagem
+<Fornecedor>:
+    name: "fornecedor"
+    BoxLayout:
+        Label:
+            id: mensagem_fornecedor
+
+
+
+
