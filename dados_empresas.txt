@@ -1,1 +1,3 @@
-0,XXX,1234,ABC,0001
+0,XXX,1234,ABC,0001,0000
+0,EmpresaTeste,Teste@#12342,Alimentos,1234,0000
+2,EMXXX,ABC@#123456641,Alimentos,1234,teste@.com

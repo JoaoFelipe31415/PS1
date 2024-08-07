@@ -92,7 +92,7 @@ def validar_cpf(cpf):
 
 def verifica_senha(string):
     if len(string) < 12:
-        return False,"A senha deve ter pelo menos 8 dígitos"
+        return False,"A senha deve ter pelo menos 12 dígitos"
     elif "@" not in string and "#" not in string and "!" not in string:
         return False,"A senha necessita de pelo menos um caracter especial @#!"
     elif not (contains_number(string)):
@@ -129,12 +129,13 @@ class Cadastro_Fornecedor(Screen):
         self.ids.label_fornecedor.text = ""
         with open("dados_empresas.txt","r") as empresas:
             lista = empresas.readlines()
-            id = len(empresas.readlines())
+            id = len(lista)
         
         empresa = self.ids.empresa_cadastro.text
         senha = self.ids.empresa_senha_cadastro.text
         categoria = self.ids.categoria_cadastro.text
         cnpj = self.ids.cnpj_cadastro.text
+        email = self.ids.email_cadastro_fornecedor.text
         parada = False
     
         
@@ -143,7 +144,7 @@ class Cadastro_Fornecedor(Screen):
             if (empresa == elemento[1]):
                 self.ids.label_fornecedor.text += "Empresa já cadastrada, "
                 parada =True     
-            if(cnpj == elemento[4][:-1]):
+            if(cnpj == elemento[4]):
                 self.ids.label_fornecedor.text += "Cnpj já cadastrado"
                 parada = True
                 
@@ -151,12 +152,12 @@ class Cadastro_Fornecedor(Screen):
             return 
 
         with open("dados_empresas.txt","a") as empresas:
-            if(id and empresa and senha and categoria and cnpj):
+            if(empresa and senha and categoria and cnpj and email):
                 senha_integridade = verifica_senha(senha)
                 if(not senha_integridade[0]):
                     self.ids.label_fornecedor.text = senha_integridade[1]
                     return
-                empresas.write(f'{id},{empresa},{senha},{categoria},{cnpj}\n')
+                empresas.write(f'{id},{empresa},{senha},{categoria},{cnpj},{email}\n')
                 self.manager.transition.direction = 'down'
                 self.manager.current = 'login'
             else:
@@ -288,7 +289,8 @@ class Esqueceu(Screen):
                     usuarios = dados.readlines()
                     for cadastro in usuarios:
                         componentes = cadastro.split(",")
-                        email_teste = componentes[4][:-1]
+                        email_teste = componentes[5][:-1]
+                        print(email_teste)
                         if(email_capturado == email_teste):
                             remetente = 'projetops1si@gmail.com'
                             senha = 'kpouyqphhfielbqi'
