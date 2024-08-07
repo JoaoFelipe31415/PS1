@@ -308,7 +308,7 @@ class Esqueceu(Screen):
                         email_teste = componentes[4][:-1]
                         if(email_capturado == email_teste):
                             remetente = 'projetops1si@gmail.com'
-                            senha = 'kpouyqphhfielbqi'
+                            senha = 'jcgiyyjzzwnhaafk'
                             destinatario = email_capturado
                             assunto = 'Recuperação de Login'
                             corpo = f'Seu usuário é {componentes[1]} senha é {componentes[2]}'
