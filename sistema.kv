@@ -5,6 +5,7 @@ WindowManager:
     Cadastro_Fornecedor:
     Cliente:
     Fornecedor:
+    Esqueceu:
 
 
     
@@ -216,7 +217,10 @@ WindowManager:
             
             ButtonRounded:
                 text: "Esqueceu"
-                pos_hint:{'x': 0.35, "top": 0.5}      
+                pos_hint:{'x': 0.35, "top": 0.5}
+                on_release: 
+                    app.root.current = "esqueceu"
+                    root.manager.transition.direction = "up"     
         
         FloatLayout:
             Label:
@@ -231,11 +235,8 @@ WindowManager:
                 size: (50, 50)
                 pos_hint: {"center_x": 0.6, "center_y": 0.5}
                                 
-                
-            
-        
         Label:
-            text: "Login"
+            id: login_aviso
        
 <Cliente>:
     name: 'cliente'
@@ -249,5 +250,55 @@ WindowManager:
             id: mensagem_fornecedor
 
 
+<Esqueceu>:
+    name: "esqueceu"
+    BoxLayout:
+        size: root.width,root.height
+        orientation: "vertical"
+        
+        spacing: 10
+        padding: 5
+        
+        Label:
+            text: "EM BREVE"      
+        TextInput:
+            id: email_esqueceu
+            hint_text: "email"
+            padding: (0,10)
+            size_hint: .8,.2
+            font_size: 15
+        
+        FloatLayout:
+            Label:
+                text: "Marque aqui para Fornecedor"
+                size_hint: (None, None)
+                size: self.texture_size
+                pos_hint: {"center_x": 0.4, "center_y": 0.5}
+
+            CheckBox:
+                id: box_esqueceu
+                size_hint: (None, None)
+                size: (50, 50)
+                pos_hint: {"center_x": 0.6, "center_y": 0.5}
+            
+            ButtonRounded:
+                text: "Enviar"
+                pos_hint: {"x":0.15, "top":0}
+                on_press: root.enviar()
+
+            ButtonRounded:
+                text: "Voltar"
+                pos_hint: {"x":0.55, "top":0}
+                on_release: 
+                    app.root.current = "login"
+                    root.manager.transition.direction = "down"
+
+
+        Label:
+            id: aviso_esqueceu
+        
+        
+        
+        
 
 
