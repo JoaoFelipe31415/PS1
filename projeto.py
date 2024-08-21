@@ -303,7 +303,7 @@ class Esqueceu(Screen):
                         if(email_capturado == email_teste):
                             achou = True
                             remetente = 'projetops1si@gmail.com'
-                            senha = 'jcgiyyjzzwnhaafk'
+                            senha = 'iyroelkuovofkuyd'
                             destinatario = email_capturado
                             assunto = 'Recuperação de Login'
                             tamanho_senha = len(componentes[2])
@@ -321,7 +321,7 @@ class Esqueceu(Screen):
                         if(email_capturado == email_teste):
                             achou = True
                             remetente = 'projetops1si@gmail.com'
-                            senha = 'jcgiyyjzzwnhaafk'
+                            senha = 'iyroelkuovofkuyd'
                             destinatario = email_capturado
                             assunto = 'Recuperação de Login'
                             tamanho_senha = len(componentes[2])
