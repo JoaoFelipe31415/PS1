@@ -136,20 +136,20 @@ class Cadastro_Fornecedor(Screen):
         categoria = self.ids.categoria_cadastro.text
         cnpj = self.ids.cnpj_cadastro.text
         email = self.ids.email_cadastro_fornecedor.text
-        parada = False
-    
+
         
         for cadastros in lista:
             elemento = cadastros.split(",")
-            if (empresa == elemento[1]):
+            if(empresa == elemento[1]):
                 self.ids.label_fornecedor.text += "Empresa já cadastrada, "
-                parada =True     
+                return     
             if(cnpj == elemento[4]):
-                self.ids.label_fornecedor.text += "Cnpj já cadastrado"
-                parada = True
+                self.ids.label_fornecedor.text += "Cnpj já cadastrado, "
+                return
+            if(email == elemento[5][:-1]):
+                self.ids.label_fornecedor.text += "E-mail já cadastrado"
+                return
                 
-        if(parada):
-            return 
 
         with open("dados_empresas.txt","a") as empresas:
             if(empresa and senha and categoria and cnpj and email):
@@ -157,7 +157,16 @@ class Cadastro_Fornecedor(Screen):
                 if(not senha_integridade[0]):
                     self.ids.label_fornecedor.text = senha_integridade[1]
                     return
+                if(not validar_email(email)):
+                    self.ids.label_fornecedor.text = "Email inválido"
+                    return
                 empresas.write(f'{id},{empresa},{senha},{categoria},{cnpj},{email}\n')
+                self.ids.empresa_cadastro.text = ''
+                self.ids.empresa_senha_cadastro.text = ''
+                self.ids.categoria_cadastro.text = ""
+                self.ids.cnpj_cadastro.text = ''
+                self.ids.email_cadastro_fornecedor.text = ''
+
                 self.manager.transition.direction = 'down'
                 self.manager.current = 'login'
             else:
@@ -283,6 +292,7 @@ class Esqueceu(Screen):
 
     def enviar(self):
         email_capturado = self.ids.email_esqueceu.text
+        achou = False
         if(validar_email(email_capturado)):
             if(self.ids.box_esqueceu.active):
                 with open("dados_empresas.txt","r") as dados:
@@ -290,13 +300,15 @@ class Esqueceu(Screen):
                     for cadastro in usuarios:
                         componentes = cadastro.split(",")
                         email_teste = componentes[5][:-1]
-                        print(email_teste)
                         if(email_capturado == email_teste):
+                            achou = True
                             remetente = 'projetops1si@gmail.com'
-                            senha = 'kpouyqphhfielbqi'
+                            senha = 'jcgiyyjzzwnhaafk'
                             destinatario = email_capturado
                             assunto = 'Recuperação de Login'
-                            corpo = f'Seu usuário é {componentes[1]} senha é {componentes[2]}'
+                            tamanho_senha = len(componentes[2])
+                            primeira_parte = 'x'*(tamanho_senha//2)
+                            corpo = f'Seu usuário é {componentes[1]} e sua senha é {primeira_parte}{componentes[2][(tamanho_senha//2):]}'
                             enviar_email(remetente, senha, destinatario, assunto, corpo)
                             self.ids.aviso_esqueceu.text = f"Email enviado"
                             return
@@ -307,11 +319,14 @@ class Esqueceu(Screen):
                         componentes = cadastro.split(",")
                         email_teste = componentes[4][:-1]
                         if(email_capturado == email_teste):
+                            achou = True
                             remetente = 'projetops1si@gmail.com'
                             senha = 'jcgiyyjzzwnhaafk'
                             destinatario = email_capturado
                             assunto = 'Recuperação de Login'
-                            corpo = f'Seu usuário é {componentes[1]} senha é {componentes[2]}'
+                            tamanho_senha = len(componentes[2])
+                            primeira_parte = 'x'*(tamanho_senha//2)
+                            corpo = f'Seu usuário é {componentes[1]} e sua senha é {primeira_parte}{componentes[2][(tamanho_senha//2):]}'
                             enviar_email(remetente, senha, destinatario, assunto, corpo)
                             self.ids.aviso_esqueceu.text = f"Email enviado"
                             return     

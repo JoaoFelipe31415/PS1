@@ -76,42 +76,61 @@ WindowManager:
     BoxLayout:
         orientation: "vertical"
         size: root.width,root.height
-        spacing: 20
+        spacing: 5
         padding: 10
 
         Label:
             size_hint:1,0.1
-
+            text:"Nome da empresa"
+            font_size: 15  
         TextInput:
             id: empresa_cadastro
             hint_text: "Nome da Empresa"
             padding: (0,10)
             size_hint: .8,.2
             font_size: 18
+        Label:
+            size_hint:1,0.1
+            text:"Senha"
+            font_size: 15
         TextInput:
             id: empresa_senha_cadastro
             hint_text: "Crie sua senha"
             size_hint: .8,.2
             font_size: 18
             padding: (0,10)
+        Label:
+            size_hint:1,0.1
+            text:"Categoria"
+            font_size: 15
         TextInput:
             id: categoria_cadastro
             hint_text: "Categoria"
             size_hint: .8,.2
             font_size: 18
             padding: (0,10)
+        Label:
+            size_hint:1,0.1
+            text:"CNPJ"
+            font_size: 15
         TextInput:
             id: cnpj_cadastro
             hint_text: "Digite o CNPJ"
             size_hint: .8,.2
             font_size: 18
             padding: (0,10)
+        Label:
+            size_hint:1,0.1
+            text:"Email"
+            font_size: 15
         TextInput:
             id: email_cadastro_fornecedor
             hint_text: "Digite o email"
             size_hint: .8,.2
             font_size: 18
             padding: (0,10)
+        Label:
+            size_hint:1,0.1
         FloatLayout:
             ButtonRounded:
                 text: "Cadastro"
@@ -133,52 +152,70 @@ WindowManager:
     BoxLayout:
         orientation: "vertical"
         size: root.width,root.height
-        spacing: 20
+        spacing: 5
         padding: 10
 
         Label:
             size_hint:1,0.1
-
+            text:"Usuário"
+            font_size: 15
         TextInput:
             id: usuario_cadastro
             hint_text: "Crie seu usuário"
             padding: (0,10)
             size_hint: .8,.2
             font_size: 18
+        Label:
+            size_hint:1,0.1
+            text:"Senha"
+            font_size: 15
         TextInput:
             id: senha_cadastro
             hint_text: "Crie sua senha"
             size_hint: .8,.2
             font_size: 18
             padding: (0,10)
+        Label:
+            size_hint:1,0.1
+            text:"CPF"
+            font_size: 15
         TextInput:
             id: cpf_cadastro
             hint_text: "Digite seu CPF"
             size_hint: .8,.2
             font_size: 18
             padding: (0,10)
+        Label:
+            size_hint:1,0.1
+            text:"Email"
+            font_size: 15
         TextInput:
             id: email_cadastro
             hint_text: "Digite seu email"
             size_hint: .8,.2
             font_size: 18
             padding: (0,10)
-        
-        ButtonRounded:
-            id:botao_cadastro
-            text: "Cadastro"
-            pos_hint: {"center_x":0.5, "top":0.5}
-            on_press: root.apertou()
-        
-        ButtonRounded:
-            text: "Voltar"
-            pos_hint: {"x":0.35, "top":1}
-            on_release: 
-                app.root.current = "cadastro"
-                root.manager.transition.direction = "down"
         Label:
-            id: label_cliente
-            size_hint:1,0.1  
+            size_hint:1,0.1
+        FloatLayout:
+            ButtonRounded:
+                text: "Cadastro"
+                pos_hint: {"center_x":0.35, "top":1}
+                on_press: root.apertou()
+
+            ButtonRounded:
+                text: "Voltar"
+                pos_hint: {"x":0.52, "top":1}
+                on_release: 
+                    app.root.current = "cadastro"
+                    root.manager.transition.direction = "down"
+            
+            Label:
+                id: label_cliente
+   
+        
+        
+        
 
 
         
@@ -306,5 +343,3 @@ WindowManager:
         
         
         
-
-
