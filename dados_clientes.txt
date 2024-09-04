@@ -1,3 +1,3 @@
-0,Joao,1234,000,xxx
-1,JoaoF,1234,001,xxxy
-2,Testador,123@#testador,12346,sistematicamoderna007@gmail.com
+0,Joao,1234,000,xxx,140.00
+1,JoaoF,1234,001,xxxy,0.00
+2,Testador,123@#testador,12346,sistematicamoderna007@gmail.com,140.00

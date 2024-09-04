@@ -1,5 +1,4 @@
-0,XXX,1234,ABC,0001,teste5
-1,XXXA,1234123123213213@#,Alimento,1234,adasd
-2,XXXA2,AE@123456789,Alimentos,123456,sistematicamoderna007@gmail.com
-3,XXXA21,AS@154131455#!23,ADASD,ASDSAD,sistematicamoderna007@gmail.com
-4,XXXA23,ASDSADSAD@#123,Rem�dio,12313,sistematicamoderna007@gmail.com
+0,BSI,12345678910@#,Alimentos,12345678911,BSI@GMAIL.COM,0.00
+1,Puppy,12345678910@#,Medicamentos,12345678912,puppy@hotmail.com,0.00
+2,C,,Alimentos,12345678913,cleiton@teste.com,1000000.00
+3,MedPet,123456789@#10,Medicamentos,1234654872319,email@valido.com,0.00
