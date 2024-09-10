@@ -636,6 +636,15 @@ class Deposito(Screen):
     global saldo
     global cnpj
     
+    
+
+    def user(self):
+        global tipo
+        if(tipo):
+            return "fornecedor"
+        else:
+            return 'cliente'
+
     def on_enter(self):
         self.ids.nome_usuario_fornecedor.text = f'Usuário: {usuario}'
         self.ids.data_fornecedor.text = obter_data_atual()
