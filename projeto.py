@@ -909,7 +909,6 @@ class GuiaPet(Screen):
     
     def on_enter(self):
         self.ids.dica.text = ""
-        #self.ids.pet_seletor.text = "Selecione seu Pet"
         self.animais = []
         self.nomes = []
         with open("dados_pets.txt","r") as dados:
@@ -921,8 +920,7 @@ class GuiaPet(Screen):
                     self.animais.append(lista[i])
                     self.nomes.append(componentes[1])
         self.ids.pet_seletor.values = self.nomes
-
-
+        
     def mostrar_dicas(self,pet):
         
         dica = {'Caramelinho':"Para manter seu Caramelo saudável e feliz, ofereça uma dieta balanceada, exercícios regulares e visitas ao veterinário. Escove seu pelo periodicamente para reduzir a queda e mantenha a higiene dental em dia para evitar problemas dentários comuns",
@@ -931,13 +929,19 @@ class GuiaPet(Screen):
         
         "Siamês": "Para manter seu Siamês saudável, forneça uma dieta equilibrada, estimule a mente com brinquedos interativos e mantenha as visitas ao veterinário em dia. Escove seu pelo curto regularmente para reduzir a queda e mantenha seus olhos limpos e livres de secreções.",
         
-        "Maine Coon":"Cuide bem do seu Maine Coon com escovações regulares para manter a pelagem longa e densa sem nós. Ofereça uma dieta nutritiva, exercícios diários e visitas regulares ao veterinário. Esteja atento à saúde dental e aos cuidados com as orelhas grandes."}
+        "Maine Coon":"Cuide bem do seu Maine Coon com escovações regulares para manter a pelagem longa e densa sem nós. Ofereça uma dieta nutritiva, exercícios diários e visitas regulares ao veterinário. Esteja atento à saúde dental e aos cuidados com as orelhas grandes.",
         
+        }
         
-        id = self.nomes.index(pet)
-        raca = self.animais[id].split(",")[3]
-        self.ids.dica.text = dica[raca[:-1]]
+        if(pet != "Selecione seu Pet"):
+            id = self.nomes.index(pet)
+            raca = self.animais[id].split(",")[3]
+            self.ids.dica.text = dica[raca[:-1]]
 
+    def voltar(self):
+        self.ids.dica.text = ""
+        self.ids.pet_seletor.text = "Selecione seu Pet"
+        return "cliente"
 
 class WindowManager(ScreenManager):
     pass

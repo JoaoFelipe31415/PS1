@@ -964,7 +964,7 @@ WindowManager:
             text: "Voltar"
             size_hint: (.1,.1)   
             on_release:
-                app.root.current = "cliente"
+                app.root.current = root.voltar()
                 root.manager.transition.direction = "down"
             pos_hint: {"center_x":.5, "top": .3}
 
