@@ -239,10 +239,10 @@ class Cadastro_Cliente(Screen):
         with open("dados_clientes.txt","r") as clientes:
             lista = clientes.readlines()
             id = len(lista)
-        usuario = self.ids.usuario_cadastro.text
-        senha = self.ids.senha_cadastro.text
-        cpf = self.ids.cpf_cadastro.text
-        email = self.ids.email_cadastro.text
+        usuario = (self.ids.usuario_cadastro.text).strip()
+        senha = (self.ids.senha_cadastro.text).strip()
+        cpf = (self.ids.cpf_cadastro.text).strip()
+        email = (self.ids.email_cadastro.text).strip()
         parada = False
         for cadastros in lista:
             elemento = cadastros.split(",")
@@ -716,17 +716,17 @@ class CadastrarProduto(Screen):
         global cnpj
         global categoria
         with open("dados_loja.txt","r+") as loja:
-            nome = self.ids.nome_produto.text
-            quantidade = self.ids.quantidade_produto.text
-            preco = self.ids.preco_produto.text
-            imagem = self.ids.imagem_produto.text
-            descricao = self.ids.descricao.text
+            nome = (self.ids.nome_produto.text).strip()
+            quantidade = (self.ids.quantidade_produto.text).strip()
+            preco = (self.ids.preco_produto.text).strip()
+            imagem = (self.ids.imagem_produto.text).strip()
+            descricao = (self.ids.descricao.text).strip()
             produtos = loja.readlines()
             for linha in produtos:
                 componentes = linha.split(",")
                 nome_atual = componentes[0]
                 cpnj_atual = componentes[5][:-1]        
-                if nome.upper() == nome_atual and cpnj_atual == cnpj:
+                if nome.upper() == nome_atual.upper() and cpnj_atual.upper() == cnpj.upper():
                     self.ids.mensagem_produto.text = ("Produto já cadastrado por sua loja")
                     return    
             if(nome == "" or quantidade == "" or preco == "" or descricao == ""):
@@ -751,6 +751,7 @@ class GerenciarProdutos(Screen):
         
         self.lista_com_todos_os_produtos = list()
         self.lista_so_com_os_nomes_dos_produtos = list()
+        self.ids.aviso_cadastro.txt = ""
         self.ids.empresa_painel.text = f"Gerenciar loja {usuario}"
         print(usuario)
         with open("dados_loja.txt","r+") as dados:
@@ -783,18 +784,26 @@ class GerenciarProdutos(Screen):
             novo_preco = self.ids.preco_painel.text
             nova_quantidade = self.ids.quantidade_painel.text
             atual = self.ids.seletor_painel.text
-            
+
             if atual == "Produtos":
                 return
-            if(float(nova_quantidade) < 0 or float(novo_preco) < 0):
+            if(nova_quantidade == "" and novo_preco == ""):
+                self.ids.aviso_cadastro.txt = "Alteração Inválida"
                 return
             
             for j in range(len(self.lista_com_todos_os_produtos)):
                 dados = self.lista_com_todos_os_produtos[j].split(",")
                 nome = dados[0]
                 if(nome == atual):
-                    dados[1] = nova_quantidade
-                    dados[2] = novo_preco
+                    
+                    if(novo_preco != ""):
+                        if(float(nova_quantidade) >= 0):
+                            dados[2] = novo_preco
+                    
+                    if(nova_quantidade != ""):
+                        if(float(novo_preco) >= 0):
+                            dados[1] = nova_quantidade
+                    
                     with open("dados_loja.txt","r+") as loja:
                         lista = loja.readlines()
                         for i in range(len(lista)):
@@ -806,11 +815,6 @@ class GerenciarProdutos(Screen):
                                 loja.truncate()
                                 self.ids.mostrar_painel.text = f'Nome: {nome}\nQuantidade: {dados[1]}\nPreço: {dados[2]}\nDescrição: {dados[5]}'
                                 return
-
-
-                    
-
-
         
         except:
             pass
