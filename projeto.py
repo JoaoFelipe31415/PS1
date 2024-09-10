@@ -303,8 +303,8 @@ class Login(Screen):
         global usuario #Nome do usuário  
         global tipo #Se é fornecedor tipo == True, caso não Tipo == False
         flag = False
-        usuario = self.ids.usuario.text
-        senha = self.ids.senha.text
+        usuario = self.ids.usuario.text.strip()
+        senha = self.ids.senha.text.strip()
         tipo = self.ids.box.active
         if(not tipo):
             with open("dados_clientes.txt","r") as dados:
@@ -722,6 +722,11 @@ class CadastrarProduto(Screen):
             imagem = (self.ids.imagem_produto.text).strip()
             descricao = (self.ids.descricao.text).strip()
             produtos = loja.readlines()
+            try:
+                preco = float(preco)
+            except:
+                self.ids.mensagem_produto.text = "Erro no preço"
+                return
             for linha in produtos:
                 componentes = linha.split(",")
                 nome_atual = componentes[0]
@@ -751,7 +756,7 @@ class GerenciarProdutos(Screen):
         
         self.lista_com_todos_os_produtos = list()
         self.lista_so_com_os_nomes_dos_produtos = list()
-        self.ids.aviso_cadastro.txt = ""
+        self.ids.aviso_cadastro.text = ""
         self.ids.empresa_painel.text = f"Gerenciar loja {usuario}"
         print(usuario)
         with open("dados_loja.txt","r+") as dados:
