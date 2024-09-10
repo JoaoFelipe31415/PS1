@@ -402,11 +402,11 @@ class Esqueceu(Screen):
                     usuarios = dados.readlines()
                     for cadastro in usuarios:
                         componentes = cadastro.split(",")
-                        email_teste = componentes[5][:-1]
+                        email_teste = componentes[5]
                         if(email_capturado == email_teste):
                             achou = True
                             remetente = 'projetops1si@gmail.com'
-                            senha = 'jcgiyyjzzwnhaafk'
+                            senha = 'uwlzjskkfilhzxib'
                             destinatario = email_capturado
                             assunto = 'Recuperação de Login'
                             tamanho_senha = len(componentes[2])
@@ -420,11 +420,11 @@ class Esqueceu(Screen):
                     usuarios = dados.readlines()
                     for cadastro in usuarios:
                         componentes = cadastro.split(",")
-                        email_teste = componentes[4][:-1]
+                        email_teste = componentes[4]
                         if(email_capturado == email_teste):
                             achou = True
                             remetente = 'projetops1si@gmail.com'
-                            senha = 'jcgiyyjzzwnhaafk'
+                            senha = 'uwlzjskkfilhzxib'
                             destinatario = email_capturado
                             assunto = 'Recuperação de Login'
                             tamanho_senha = len(componentes[2])
