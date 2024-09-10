@@ -12,7 +12,10 @@ WindowManager:
     Medicamentos:
     Painel:
     Alimentos:
-    
+    Deposito:
+    GerenciarProdutos:
+    CadastroPet:
+    GuiaPet:
 
 <TextInput>
     multiline: False
@@ -36,6 +39,63 @@ WindowManager:
             size: self.size
             pos: self.pos
             radius: [10]
+<Deposito>:
+    name: "deposito"
+    FloatLayout:
+        size: root.width,root.height
+        padding: 10
+        
+        Label:  
+            id: nome_usuario_fornecedor
+            size_hint: 1, None
+            size: (500, 50)
+            text_size: self.size
+            pos_hint: {"x":0.1, "top": 1}
+            text: "Fornecedor"
+        Label:
+            id: data_fornecedor
+            size_hint: 1, None
+            size: (500, 50)
+            text_size: self.size
+            pos_hint: {"x":.745, "top": 1}
+            text: "Data: 31/08/2024"
+        Label:
+            id: saldo_fornecedor
+            size_hint: 1, None
+            size: (500, 50)
+            text_size: self.size
+            pos_hint: {"x":0.42, "top": 1}
+            text: "Saldo: R$ 0,00"
+        Label:
+            text: "Informe o valor à ser depositado"
+            size_hint: 1, None
+            size: (500, 50)
+            pos_hint: {"x":0, "top": 0.8}
+        
+        TextInput:
+            id: valor_deposito
+            pos_hint: {"x":0.3, "top": 0.7}
+            size_hint : .4,0.11
+            hint_text: "Valor"
+        
+        ButtonRounded:
+            id: botao_depositar
+            pos_hint: {"x":0.15, "top": 0.55}
+            text: "Depositar"
+            size_hint: (0.3,0.1)
+            on_press: root.depositar()
+        
+        ButtonRounded:
+            id: voltar_depositar
+            pos_hint: {"x":0.55, "top": 0.55}
+            text: "Voltar"
+            size_hint: (0.3,0.1)
+            on_release: 
+                app.root.current = "fornecedor"
+                root.manager.transition.direction = "down"
+
+
+
 <Cadastro>:
     name:"cadastro"
     BoxLayout:
@@ -304,7 +364,6 @@ WindowManager:
             size: (500, 50)
             text_size: self.size
             pos_hint: {"x":.745, "top": 1}
-            text: "Data: 31/08/2024"
         Label:
             id: saldo
             size_hint: 1, None
@@ -318,14 +377,31 @@ WindowManager:
             text: "Loja"   
             pos_hint: {"x":0.03, "top": 0.8}
             size_hint: (.25,.1)
+            on_release:
+                app.root.current = "loja"
+                root.manager.transition.direction = "up" 
         ButtonRounded:
             text: "Cadastro de Animais"   
             pos_hint: {"x":0.33, "top": .8}
             size_hint: (.3,.1)
+            on_release:
+                app.root.current = "cadastropet"
+                root.manager.transition.direction = "up" 
         ButtonRounded:
             text: "Guia Pet"   
             pos_hint: {"x":0.68, "top": .8}
             size_hint: (.3,.1)
+            on_release:
+                app.root.current = "guiapet"
+                root.manager.transition.direction = "up" 
+        
+        ButtonRounded:
+            text: "Deposito"  
+            pos_hint: {"x":0.33, "top": .66}
+            size_hint: (.3,.1)
+            on_release:
+                app.root.current = "deposito"
+                root.manager.transition.direction = "up"
         ButtonRounded:
             text: "SAIR"
             pos_hint: {"x":0.33, "top":0.3}
@@ -348,6 +424,15 @@ WindowManager:
     FloatLayout:
         size: root.width,root.height
         padding: 10
+        
+        Button:
+            id: mostrar_saldo
+            background_normal: ""
+            background_color: (0,0,0,0)
+            size_hint: (.122,.06) 
+            pos_hint: {"x":0.4, "top": .978}  
+            on_press: root.mostrar_saldo()
+        
         Label:
             id: mensagem_fornecedor
         
@@ -388,6 +473,15 @@ WindowManager:
             on_release:
                 app.root.current = "loja"
                 root.manager.transition.direction = "up"
+        
+        ButtonRounded:
+            text: "Deposito"  
+            pos_hint: {"x":0.34, "top": .66}
+            size_hint: (.3,.1)
+            on_release:
+                app.root.current = "deposito"
+                root.manager.transition.direction = "up"
+        
         ButtonRounded:
             text: "SAIR"
             pos_hint: {"x":0.35, "top":0.3}
@@ -485,9 +579,10 @@ WindowManager:
         ButtonRounded:
             text: "Gerenciar Produtos"
             pos_hint: {"x":0.55, "top": 0.55 + 0.3}
-        ButtonRounded:
-            text: "Relatório"
-            pos_hint: {"x":0.15, "top": .15 + 0.3}
+            on_release:
+                app.root.current = "gerenciarprodutos"
+                root.manager.transition.direction = "up"
+        
         ButtonRounded:
             text: "Voltar"
             on_release:
@@ -622,6 +717,7 @@ WindowManager:
             on_text: root.mostrar_produto(self.text)
         Image:
             id: imagem_painel
+            opacity: 0
             allow_stretch: True
             keep_ratio: True
             size_hint: (0.4, 0.4)  
@@ -644,6 +740,12 @@ WindowManager:
             hint_text: "Quantidade"
             pos_hint: {"x":0.06, "top": .3}
         
+        Label:
+            id: saldo_painel
+            size_hint: None, None
+            size: (200, 50)
+            pos_hint: {"center_x":.1, "top": 1}  
+        
 
         ButtonRounded:
             text: "Comprar"
@@ -653,7 +755,6 @@ WindowManager:
         
         Label:
             id:aviso_painel
-            text: "to aqui"
             size_hint: None, None
             size: (200, 50)
             pos_hint: {"center_x":0.5, "top": .2}  
@@ -696,7 +797,174 @@ WindowManager:
             on_release: root.proximo()
             size: root.width,root.height
             pos_hint:{'center_x':0.7, "top":0.35}
+
+<GerenciarProdutos>:
+    name: "gerenciarprodutos"
+    FloatLayout:
+        size: root.width,root.height
+        Label: 
+            id: empresa_painel
+            text: 'Bem vindo a loja da empresa'
+            size_hint: None, None
+            size: (200, 50)
+            pos_hint: {'center_x':0.5, "top":1}
+        Spinner:
+            id: seletor_painel
+            text: "Produtos"
+            #values: ['Alimentos','Medicamentos']
+            size_hint: 0.5, .1
+            pos_hint:{'center_x':0.5, "top": 0.9}
+            on_text: root.mostrar_produto(self.text)
+        Image:
+            id: imagem_painel
+            opacity: 0
+            allow_stretch: True
+            keep_ratio: True
+            size_hint: (0.4, 0.4)  
+            pos_hint: {'center_x': 0.5, 'top': 0.75}
+        Label:
+            id:mostrar_painel
+            size_hint: None, None
+            size: (200, 50)
+            pos_hint: {"x":0, "top": .5}  
+        
+        Label:
+            text: "Quantidade"
+            size_hint: None, None
+            size: (100, 50)
+            pos_hint: {"x":.09, "top": .37}
+        
+        TextInput:
+            id: quantidade_painel
+            size_hint: .2,.1
+            hint_text: "Quantidade"
+            pos_hint: {"x":0.06, "top": .3}
+
+        
+        Label:
+            text: "Preço"
+            size_hint: None, None
+            size: (100, 50)
+            pos_hint: {"x":.09 + .35, "top": .37}
+        
+        TextInput:
+            id: preco_painel
+            size_hint: .2,.1
+            hint_text: "Novo Preço"
+            pos_hint: {"x":0.06+0.35, "top": .3}
+        
+        
         
 
+        ButtonRounded:
+            text: "Alterar"
+            on_press: root.alterar()
+            size_hint: (.1,.1)
+            pos_hint: {"x":.1+.18, "top": .15}   
+        
+        Label:
+            id:aviso_painel
+            size_hint: None, None
+            size: (200, 50)
+            pos_hint: {"center_x":0.5, "top": .2}  
+        
+        ButtonRounded:
+            text: "Voltar"
+            size_hint: (.1,.1)   
+            on_release:
+                app.root.current = "gerenciador"
+                root.manager.transition.direction = "down"
+            pos_hint: {"x":.8, "top": .15}
     
-    
+
+<CadastroPet>:
+    name: "cadastropet"
+    FloatLayout:
+        size: root.width,root.height
+        BoxLayout:
+            orientation: "vertical"
+            size: root.width,root.height
+            spacing: 5
+            padding: 10
+
+            Label:
+                size_hint:1,0.1
+                text:"Nome do Pet"
+                font_size: 15
+            TextInput:
+                id: pet_cadastro
+                hint_text: "Nome do Pet"
+                padding: (0,10)
+                size_hint: .8,.2
+                font_size: 18
+            Spinner:
+                id: pet_seletor
+                text: "Tipo de Pet"
+                values: ['Cachorro','Gato']
+                size_hint: 0.5, .25
+                pos_hint:{'center_x':0.5, "top": 0.9}
+                on_text: root.mostrar_tipos(self.text)
+                
+            Spinner:
+                id: raca_seletor
+                text: "Raça"
+                #values: ['Golden Retrivier','Husky Siberiano']
+                size_hint: 0.5, .25
+                pos_hint:{'center_x':0.5, "top": 0.9}
+                on_text: root.verifica()
+                opacity: 0
+                
+            Label:
+                size_hint:1,0.1
+            FloatLayout:
+                ButtonRounded:
+                    text: "Cadastro"
+                    pos_hint: {"center_x":0.35, "top":1}
+                    on_press: root.apertou()
+
+                ButtonRounded:
+                    text: "Voltar"
+                    pos_hint: {"x":0.52, "top":1}
+                    on_release: 
+                        app.root.current = "cliente"
+                        root.manager.transition.direction = "down"
+                
+                Label:
+                    id: aviso_pet
+
+<GuiaPet>:
+    name: "guiapet"
+    FloatLayout:
+        size: root.width,root.height
+        
+        Label:
+            text: "Guia Pet"
+            size_hint: None, None
+            size: (200, 50)
+            pos_hint: {"center_x":0.5, "top": 1}  
+        
+        
+        Spinner:
+            id: pet_seletor
+            text: "Selecione seu Pet"
+            #values: ['Cachorro','Gato']
+            size_hint: 0.5, .1
+            pos_hint:{'center_x':0.5, "top": 0.9}
+            on_text: root.mostrar_dicas(self.text)
+
+
+        Label:
+            id: dica
+            text_size: self.size
+            size_hint: (None, None)
+            size: 600, 150
+            pos_hint:{'center_x':0.5, "top": 0.8}
+        
+        ButtonRounded:
+            text: "Voltar"
+            size_hint: (.1,.1)   
+            on_release:
+                app.root.current = "cliente"
+                root.manager.transition.direction = "down"
+            pos_hint: {"center_x":.5, "top": .3}
+

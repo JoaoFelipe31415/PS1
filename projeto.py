@@ -8,6 +8,7 @@ from pathlib import Path
 import shutil
 from datetime import datetime
 from sys import exit
+
 def obter_data_atual():
     # Captura a data e hora atuais
     data_atual = datetime.now()
@@ -98,12 +99,12 @@ def enviar_email(remetente, senha, destinatario, assunto, corpo, caminho_anexo=N
 
 
 #Variáveis Globais
-usuario = None
-saldo = None
-categoria = None
-cnpj = None
-valor = None
+usuario = None #Nome do usuário
+saldo = None #Saldo do usuário
+categoria = None #Verificar
+cnpj = None 
 tipo = None
+id = None
 
 loja_categoria = None
 empresa = None
@@ -295,11 +296,12 @@ class Login(Screen):
             print("login_aviso não encontrado em ids")
 
     def entrar(self):
-        global cnpj
-        global categoria
-        global saldo
-        global usuario   
-        global tipo
+        global id
+        global cnpj #CNPJ da empresa que logou
+        global categoria #Categoria da empresa que logou
+        global saldo #Saldo da conta do usuário
+        global usuario #Nome do usuário  
+        global tipo #Se é fornecedor tipo == True, caso não Tipo == False
         flag = False
         usuario = self.ids.usuario.text
         senha = self.ids.senha.text
@@ -330,6 +332,7 @@ class Login(Screen):
                 for cadastro in usuarios:
                     componentes = cadastro.split(",")
                     nome = componentes[1]
+                    id = componentes[0]
                     password = componentes[2]
                     categoria = componentes[3]
                     cnpj = componentes[4]
@@ -354,6 +357,7 @@ class Cliente(Screen):
         self.ids.mensagem.text = f'Olá! Seja bem vindo ao espaço do cliente, {usuario}'
         self.ids.nome_usuario.text = f'Usuário: {usuario}'
         self.ids.saldo.text = f'Saldo: R${novo_saldo}'
+        self.ids.data.text = obter_data_atual()
 
     def mostrar_saldo(self):
         string = self.ids.saldo.text
@@ -367,6 +371,13 @@ class Cliente(Screen):
 class Fornecedor(Screen):
     global usuario
     global saldo
+    
+    def mostrar_saldo(self):
+        string = self.ids.saldo_fornecedor.text
+        if "R$" in string:
+            self.ids.saldo_fornecedor.text = "Saldo: --------"
+        else:
+            self.ids.saldo_fornecedor.text = f"Saldo: R$ {saldo.replace(".",",")}"
     
     def sair(self):
         exit()
@@ -447,7 +458,7 @@ class Loja(Screen):
 
 class Medicamentos(Screen):
     def on_enter(self):
-        global loja_categoria
+        global loja_categoria #Categoria da loja selecionada na tela Loja.
         with open("dados_empresas.txt","r") as arquivo:
             temp  = list()
             lista_de_empresas = arquivo.readlines()
@@ -486,7 +497,11 @@ class Alimentos(Screen):
 
 class Painel(Screen):
     def on_enter(self):
-        global categoria
+        self.ids.seletor_painel.text = "Produtos"
+        self.ids.imagem_painel.opacity = 0
+        self.ids.quantidade_painel.text = ""
+        self.ids.saldo_painel.text = f'Seu saldo: R$ {saldo}'
+        global loja_categoria
         global empresa
         with open("dados_loja.txt","r+") as loja:
             lista = loja.readlines()
@@ -501,55 +516,179 @@ class Painel(Screen):
             self.ids.seletor_painel.values = self.auxiliar
     
     def mostrar_produto(self,nome):
+        self.ids.mostrar_painel.text = "Produtos"
         self.ids.mostrar_painel.text = ""
-        global valor
+        self.valor = None
         for produto in self.auxiliar_todos:
             dados = produto.split(",")
             if dados[0] == nome:
-                valor = dados[3]
+                self.valor = dados[2]
                 self.ids.mostrar_painel.text = f'Nome: {nome}\nQuantidade: {dados[1]}\nPreço: {dados[2]}\nDescrição: {dados[5]}'
                 if(dados[4] != "0"):
                     self.ids.imagem_painel.source = dados[4]
+                    self.ids.imagem_painel.opacity = 1
+                else:
+                    self.ids.imagem_painel.opacity = 0
+        
     def retorno(self):
-        return categoria.lower()
+        return loja_categoria.lower()
     
     def comprar(self):
-        global valor
         global saldo
+        global tipo
+        global usuario
+        global id
         try:
             atual = self.ids.seletor_painel.text
-            for produto in self.auxiliar_todos:
-                dados = produto.split(",")
+            if atual == "Produtos":
+                return
+           
+            #print(self.auxiliar_todos)
+            
+            for j in range(len(self.auxiliar_todos)):
+                dados = self.auxiliar_todos[j].split(",")
                 if atual == dados[0]:
                     quantidade = self.ids.quantidade_painel.text
+                    if(float(dados[1]) <= 0):
+                        self.ids.aviso_painel.text = "Produto indisponível"
+                        return
+                    if usuario == dados[-2]:
+                       self.ids.aviso_painel.text = "Operação inválida"
+                       return
                     if(float(quantidade) < 0):
                         self.ids.aviso_painel.text = "Quantidade inválida"
                         return
-                    total = float(quantidade) * float(valor)
+                    total = float(quantidade) * float(self.valor)
+    
+                    
                     if(float(saldo) < total):
                         self.ids.aviso_painel.text = "Saldo Insuficiente"
                         return
-
-                    saldo = saldo - total
-                    dados[1] = str(float(dados[1]) - float(quantidade))
+                    
+                    saldo = str(float(saldo) - total) + "0"
+                    self.ids.saldo_painel.text = f'Seu saldo: R$ {saldo}'
                     self.ids.aviso_painel.text = "Compra efetuada"
+                    
+                    with open("dados_loja.txt","r+") as dados:
+                        lista = dados.readlines()
+                        for i in range(len(lista)):
+                            componentes = lista[i].split(",")
+                            nome = componentes[0]
+                            if(nome == atual):
+                                componentes[1] = str(int(componentes[1]) - int(quantidade))
+                                lista[i] = ','.join(componentes)
+                                self.auxiliar_todos[j] = ','.join(componentes)
+                                self.ids.mostrar_painel.text = f'Nome: {nome}\nQuantidade: {componentes[1]}\nPreço: {componentes[2]}\nDescrição: {componentes[5]}'
+                                dados.seek(0)
+                                dados.writelines(lista)
+                                dados.truncate()
+                                break
+                
+                    if(not tipo):
+                        with open("dados_clientes.txt","r+") as dados:
+                            lista = dados.readlines()
+                            linha = lista[int(id)]
+                            novo_saldo = float(saldo)
+                            componentes = linha.split(",")
+                            componentes[-1] = f'{novo_saldo:.2f}\n'
+                            linha = ','.join(componentes)
+                            lista[int(id)] = linha
+                            dados.seek(0)
+                            dados.writelines(lista)
+                            dados.truncate()
+                    else:
+                        with open("dados_empresas.txt","r+") as dados:
+                            lista = dados.readlines()
+                            linha = lista[int(id)]
+                            novo_saldo = float(saldo)
+                            componentes = linha.split(",")
+                            componentes[-1] = f'{novo_saldo:.2f}\n'
+                            linha = ','.join(componentes)
+                            lista[int(id)] = linha
+                            dados.seek(0)
+                            dados.writelines(lista)
+                            dados.truncate()
+                    
+                    with open("dados_empresas.txt","r+") as dados:
+                        lista = dados.readlines()
+                        nome_da_empresa_atual = self.auxiliar_todos[0].split(",")[6]
+                        for i in range(len(lista)):
+                            componentes = lista[i].split(",")
+                            nome = componentes[1]
+                            if(nome_da_empresa_atual == nome):
+                                componentes[-1] = str(float(componentes[-1]) + total) + "0\n"          
+                                lista[i] = ','.join(componentes)
+                                dados.seek(0)
+                                dados.writelines(lista)
+                                dados.truncate()
+                                break
                     return
-            
-            with open("dados_loja.txt","r+") as loja:
-                produtos = loja.readlines()
-                for produto in produtos:
-                    dados = produto.split(",")
-                    if dados[0] == self.auxiliar_todos[0].split(",")[0] and len(self.auxiliar_todos) > 0:
-                        produto = self.auxiliar_todos[0]
-                        self.auxiliar_todos.pop(0)
-                loja.writelines(produtos)
-        except:
-            pass
+        
+        except:                 
+            return
 
                 
 
 class Gerenciador(Screen):
     pass        
+class Deposito(Screen):
+    global usuario
+    global saldo
+    global cnpj
+    
+    def on_enter(self):
+        self.ids.nome_usuario_fornecedor.text = f'Usuário: {usuario}'
+        self.ids.data_fornecedor.text = obter_data_atual()
+        self.ids.saldo_fornecedor.text = f"Saldo: R$ {saldo.replace(".",",")}"
+    def depositar(self):
+        global saldo
+        try:
+            if cnpj == None:
+                with open("dados_clientes.txt",'r+') as dados:
+                    lista = dados.readlines()
+                    for i in range(len(lista)):
+                        componentes = lista[i].split(",")
+                        nome = componentes[1]
+                        if(nome == usuario):
+                            montante = float(self.ids.valor_deposito.text)
+                            if montante < 0:
+                                return
+                            resultado = (float(componentes[-1]) + montante)
+                            resultado = f'{resultado:.2f}'
+                            componentes[-1] = resultado+"\n"
+                            saldo = resultado
+                            lista[i] = ",".join(componentes)
+                            dados.seek(0)
+                            self.ids.saldo_fornecedor.text = f"Saldo: R$ {saldo.replace(".",",")}"
+                            #print(lista)
+                            dados.writelines(lista)
+                            dados.truncate()
+                            return
+            else:
+                with open("dados_empresas.txt",'r+') as dados:
+                    lista = dados.readlines()
+                    for i in range(len(lista)):
+                        componentes = lista[i].split(",")
+                        nome = componentes[1]
+                        if(nome == usuario):
+                            montante = float(self.ids.valor_deposito.text)
+                            if montante < 0:
+                                return
+                            resultado = (float(componentes[-1]) + montante)
+                            resultado = f'{resultado:.2f}'
+                            componentes[-1] = resultado+"\n"
+                            saldo = resultado
+                            lista[i] = ",".join(componentes)
+                            dados.seek(0)
+                            self.ids.saldo_fornecedor.text = f"Saldo: R$ {saldo.replace(".",",")}"
+                            #print(lista)
+                            dados.writelines(lista)
+                            dados.truncate()
+                            return
+        except:
+            return
+                            
+
 class CadastrarProduto(Screen):
     def on_enter(self):
         self.ids.nome_produto.text = ""
@@ -591,6 +730,191 @@ class CadastrarProduto(Screen):
             self.ids.imagem_produto.text = ""
             self.ids.descricao.text = ""
             self.ids.mensagem_produto.text = "Produto cadastrado"
+
+class GerenciarProdutos(Screen):
+    def on_enter(self):
+        global usuario
+        
+        self.lista_com_todos_os_produtos = list()
+        self.lista_so_com_os_nomes_dos_produtos = list()
+        self.ids.empresa_painel.text = f"Gerenciar loja {usuario}"
+        print(usuario)
+        with open("dados_loja.txt","r+") as dados:
+            lista = dados.readlines()
+            for i in range(len(lista)):
+                componentes = lista[i].split(",")
+                nome_empresa = componentes[-2]
+                if(nome_empresa == usuario):
+                    self.lista_so_com_os_nomes_dos_produtos.append(componentes[0])
+                    self.lista_com_todos_os_produtos.append(lista[i])
+        self.ids.seletor_painel.values = self.lista_so_com_os_nomes_dos_produtos
+    
+    def mostrar_produto(self,nome):
+        self.ids.mostrar_painel.text = "Produtos"
+        self.ids.mostrar_painel.text = ""
+        self.valor = None
+        for produto in self.lista_com_todos_os_produtos:
+            dados = produto.split(",")
+            if dados[0] == nome:
+                self.valor = dados[2]
+                self.ids.mostrar_painel.text = f'Nome: {nome}\nQuantidade: {dados[1]}\nPreço: {dados[2]}\nDescrição: {dados[5]}'
+                if(dados[4] != "0"):
+                    self.ids.imagem_painel.source = dados[4]
+                    self.ids.imagem_painel.opacity = 1
+                else:
+                    self.ids.imagem_painel.opacity = 0
+    
+    def alterar(self):
+        try:
+            novo_preco = self.ids.preco_painel.text
+            nova_quantidade = self.ids.quantidade_painel.text
+            atual = self.ids.seletor_painel.text
+            
+            if atual == "Produtos":
+                return
+            if(float(nova_quantidade) < 0 or float(novo_preco) < 0):
+                return
+            
+            for j in range(len(self.lista_com_todos_os_produtos)):
+                dados = self.lista_com_todos_os_produtos[j].split(",")
+                nome = dados[0]
+                if(nome == atual):
+                    dados[1] = nova_quantidade
+                    dados[2] = novo_preco
+                    with open("dados_loja.txt","r+") as loja:
+                        lista = loja.readlines()
+                        for i in range(len(lista)):
+                            busca = lista[i].split(",")
+                            if(busca[0] == nome):
+                                lista[i] = ','.join(dados)
+                                loja.seek(0)
+                                loja.writelines(lista)
+                                loja.truncate()
+                                self.ids.mostrar_painel.text = f'Nome: {nome}\nQuantidade: {dados[1]}\nPreço: {dados[2]}\nDescrição: {dados[5]}'
+                                return
+
+
+                    
+
+
+        
+        except:
+            pass
+
+class CadastroPet(Screen):
+    
+    def on_enter(self):
+        self.ids.pet_cadastro.text = ""
+        self.ids.raca_seletor.opacity = 0
+        self.ids.raca_seletor.text = "Raça"
+        self.ids.pet_seletor.text = "Tipo de Pet"
+        self.ids.aviso_pet.text = ""
+    
+    def verifica(self):
+        nome_do_pet = self.ids.pet_cadastro.text
+        if(not(bool(nome_do_pet))):
+            self.ids.raca_seletor.opacity = 0
+            self.ids.raca_seletor.values = []
+            self.ids.aviso_pet.text = "Digite um nome para seu Pet"
+            return
+        return
+    
+
+    def mostrar_tipos(self,tipo):
+        global usuario
+        nome_do_pet = self.ids.pet_cadastro.text
+        cachorros = ['Caramelinho','Husky Siberiano']
+        gatos = ['Siamês','Maine Coon']
+
+        animais = {'Cachorro':cachorros, 'Gato':gatos}
+
+        
+        
+        if(bool(nome_do_pet)):
+            self.ids.raca_seletor.values = animais[tipo]
+            self.ids.raca_seletor.opacity = 1
+            self.ids.aviso_pet.text = ""
+        else:
+            self.ids.raca_seletor.opacity = 0
+            self.ids.raca_seletor.values = []
+            self.ids.aviso_pet.text = "Digite um nome para seu Pet"
+            return
+    
+    def apertou(self):   
+        nome_do_pet = self.ids.pet_cadastro.text
+        tipo = self.ids.pet_seletor.text
+        
+        
+        if nome_do_pet == "":
+            self.ids.aviso_pet.text = "Digite um nome para seu Pet"
+            return
+        
+        if tipo == "Tipo de Pet":
+            self.ids.aviso_pet.text = "Selecione um tipo"
+            return
+        
+        self.ids.aviso_pet.text = ""
+        
+        raca = self.ids.raca_seletor.text
+        if raca == "Raça":
+            return
+
+        with open("dados_pets.txt","r+") as dados:
+            raca = self.ids.raca_seletor.text
+            lista = dados.readlines()
+            for i in range(len(lista)):
+                componentes = lista[i].split(',')
+                nome_dono_busca = componentes[0]
+                nome_pet_busca = componentes[1]
+                if(nome_pet_busca == nome_do_pet and usuario == nome_dono_busca):
+                    return
+            string = f'{usuario},{nome_do_pet},{tipo},{raca}\n'
+            dados.write(string)
+            dados.truncate()
+
+            self.ids.pet_cadastro.text = ""
+            self.ids.raca_seletor.opacity = 0
+            self.ids.raca_seletor.text = "Raça"
+            self.ids.raca_seletor.values = []
+            self.ids.pet_seletor.text = "Tipo de Pet"
+            
+            self.ids.aviso_pet.text = "Cadastro Efetuado"
+            return
+
+class GuiaPet(Screen):
+    
+    
+    def on_enter(self):
+        self.ids.dica.text = ""
+        #self.ids.pet_seletor.text = "Selecione seu Pet"
+        self.animais = []
+        self.nomes = []
+        with open("dados_pets.txt","r") as dados:
+            lista = dados.readlines()
+            for i in range(len(lista)):
+                componentes = lista[i].split(',')
+                tutor = componentes[0]
+                if (tutor == usuario):
+                    self.animais.append(lista[i])
+                    self.nomes.append(componentes[1])
+        self.ids.pet_seletor.values = self.nomes
+
+
+    def mostrar_dicas(self,pet):
+        
+        dica = {'Caramelinho':"Para manter seu Caramelo saudável e feliz, ofereça uma dieta balanceada, exercícios regulares e visitas ao veterinário. Escove seu pelo periodicamente para reduzir a queda e mantenha a higiene dental em dia para evitar problemas dentários comuns",
+        
+        "Husky Siberiano": "Cuide bem do seu Husky Siberiano oferecendo exercícios intensos e atividades estimulantes, além de uma alimentação adequada. Eles têm uma pelagem espessa que exige escovação frequente para evitar emaranhados e reduzir a queda de pelos",
+        
+        "Siamês": "Para manter seu Siamês saudável, forneça uma dieta equilibrada, estimule a mente com brinquedos interativos e mantenha as visitas ao veterinário em dia. Escove seu pelo curto regularmente para reduzir a queda e mantenha seus olhos limpos e livres de secreções.",
+        
+        "Maine Coon":"Cuide bem do seu Maine Coon com escovações regulares para manter a pelagem longa e densa sem nós. Ofereça uma dieta nutritiva, exercícios diários e visitas regulares ao veterinário. Esteja atento à saúde dental e aos cuidados com as orelhas grandes."}
+        
+        
+        id = self.nomes.index(pet)
+        raca = self.animais[id].split(",")[3]
+        self.ids.dica.text = dica[raca[:-1]]
+
 
 class WindowManager(ScreenManager):
     pass

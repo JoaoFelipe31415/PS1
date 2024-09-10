@@ -1,0 +1,6 @@
+tutor,nome,tipo,raÃ§a
+c,Lulu,Cachorro,Caramelinho
+c,Bobby,Cachorro,Husky Siberiano
+c,Garfield,Gato,Siamês
+c,Tom,Gato,Maine Coon
+c,Loopi,Cachorro,Caramelinho

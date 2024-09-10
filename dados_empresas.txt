@@ -1,4 +1,5 @@
-0,BSI,12345678910@#,Alimentos,12345678911,BSI@GMAIL.COM,0.00
+0,BSI,12345678910@#,Alimentos,12345678911,BSI@GMAIL.COM,20000.00
 1,Puppy,12345678910@#,Medicamentos,12345678912,puppy@hotmail.com,0.00
-2,C,,Alimentos,12345678913,cleiton@teste.com,1000000.00
-3,MedPet,123456789@#10,Medicamentos,1234654872319,email@valido.com,0.00
+2,c,,Alimentos,12345678914,cleiton@teste.com,0.00
+3,MedPet,123456789@#10,Medicamentos,1234654872319,email@valido.com,21941.00
+4,Nome,senha#12c3456789,Alimentos,CNPJTESTE,EMAIL@TESTE.COM,0.00

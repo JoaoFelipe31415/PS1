@@ -1,5 +1,6 @@
-nome,quantidade,preco,categoria,caminho,descricao,user,cnpj
+nome_do_produto,quantidade,preco,categoria,caminho,descricao,user,cnpj
 TESTE,1,1,Alimentos,0,xxx,xxx,12345678913
-JOHNJOHN,10,1,Medicamentos,0,Sabonete,MedPet,1234654872319
-LEAO,123,1,Medicamentos,imagens/leao.png,Bom,MedPet,1234654872319
-RACAO,12,1,Alimentos,0,Boa,C,12345678913
+JOHNJOHN,100,1,Medicamentos,0,Sabonete,MedPet,1234654872319
+LEAO,960,20,Medicamentos,imagens/leao.png,Bom,MedPet,1234654872319
+RACAO,12,1,Alimentos,0,Boa,c,12345678913
+REMEDIO,1000,12,Medicamentos,0,Muito Bom,Puppy,12345678912
