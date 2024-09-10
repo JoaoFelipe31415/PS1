@@ -756,7 +756,7 @@ class GerenciarProdutos(Screen):
         
         self.lista_com_todos_os_produtos = list()
         self.lista_so_com_os_nomes_dos_produtos = list()
-        self.ids.aviso_cadastro.text = ""
+        self.ids.aviso_painel.text = ""
         self.ids.empresa_painel.text = f"Gerenciar loja {usuario}"
         print(usuario)
         with open("dados_loja.txt","r+") as dados:
@@ -793,7 +793,7 @@ class GerenciarProdutos(Screen):
             if atual == "Produtos":
                 return
             if(nova_quantidade == "" and novo_preco == ""):
-                self.ids.aviso_cadastro.txt = "Alteração Inválida"
+                self.ids.aviso_painel.txt = "Alteração Inválida"
                 return
             
             for j in range(len(self.lista_com_todos_os_produtos)):
