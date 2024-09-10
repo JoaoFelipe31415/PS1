@@ -565,9 +565,7 @@ class Painel(Screen):
                         self.ids.aviso_painel.text = "Saldo Insuficiente"
                         return
                     
-                    saldo = str(float(saldo) - total) + "0"
-                    self.ids.saldo_painel.text = f'Seu saldo: R$ {saldo}'
-                    self.ids.aviso_painel.text = "Compra efetuada"
+                    
                     
                     with open("dados_loja.txt","r+") as dados:
                         lista = dados.readlines()
@@ -575,6 +573,13 @@ class Painel(Screen):
                             componentes = lista[i].split(",")
                             nome = componentes[0]
                             if(nome == atual):
+                                temp = int(quantidade)
+                                if(temp > int(componentes[1])):
+                                    self.ids.aviso_painel.text = "Quantidade acima do disponível"
+                                    return
+                                saldo = str(float(saldo) - total) + "0"
+                                self.ids.saldo_painel.text = f'Seu saldo: R$ {saldo}'
+                                self.ids.aviso_painel.text = "Compra efetuada"
                                 componentes[1] = str(int(componentes[1]) - int(quantidade))
                                 lista[i] = ','.join(componentes)
                                 self.auxiliar_todos[j] = ','.join(componentes)
