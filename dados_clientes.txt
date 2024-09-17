@@ -1,4 +1,4 @@
-0,c,,000,xxx,6515314425430845.00
+0,c,,000,xxx,0.00
 1,JoaoF,1234,001,xxxy,24680.00
 2,Testador,123@#testador,12346,sistematicamoderna007@gmail.com,46129.00
 3,DemoDay,1234,123456,DemdoDay@Teste.com,0

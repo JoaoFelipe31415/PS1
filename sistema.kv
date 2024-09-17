@@ -91,7 +91,7 @@ WindowManager:
             text: "Voltar"
             size_hint: (0.3,0.1)
             on_release: 
-                app.root.current = root.user()
+                app.root.current = "fornecedor"
                 root.manager.transition.direction = "down"
 
 
@@ -653,8 +653,8 @@ WindowManager:
             size_hint:1,0.1
             text:"Imagem"
             font_size: 15
-        
         FloatLayout:
+
             ButtonRounded:
                 text: "Cadastrar"
                 pos_hint: {"center_x":0.30, "top":0.7}
@@ -964,7 +964,7 @@ WindowManager:
             text: "Voltar"
             size_hint: (.1,.1)   
             on_release:
-                app.root.current = root.voltar()
+                app.root.current = "cliente"
                 root.manager.transition.direction = "down"
             pos_hint: {"center_x":.5, "top": .3}
 

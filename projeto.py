@@ -173,8 +173,6 @@ def validar_email(email):
     
     return bool(padrao_email.match(email))
 
-    
-
 class Cadastro(Screen):
     pass          
 class Cadastro_Fornecedor(Screen):
@@ -190,22 +188,26 @@ class Cadastro_Fornecedor(Screen):
         categoria = self.ids.categoria_cadastro.text
         cnpj = self.ids.cnpj_cadastro.text
         email = self.ids.email_cadastro_fornecedor.text
-
-        
+        mensagem = ""
+        parada = False
         for cadastros in lista:
             elemento = cadastros.split(",")
             if(empresa == elemento[1]):
-                self.ids.label_fornecedor.text += "Empresa já cadastrada, "
-                return     
+                mensagem += "Empresa já cadastrada, "
+                parada = True   
             if(cnpj == elemento[4]):
-                self.ids.label_fornecedor.text += "Cnpj já cadastrado, "
-                return
+                mensagem += "Cnpj já cadastrado, "
+                parada = True
             if(email == elemento[5][:-1]):
-                self.ids.label_fornecedor.text += "E-mail já cadastrado, "
-                return
-            if(empresa.lower() in "empresas"):
-                self.ids.label_fornecedor.text += "Não é possível registrar esse nome de empresa."
-                return
+                mensagem += "E-mail já cadastrado, "
+                parada = True
+            if(empresa.lower() == "empresas"):
+                mensagem += "Não é possível registrar esse nome de empresa."
+                parada = True
+            
+        if(parada):
+            self.ids.label_fornecedor.text = mensagem
+            return
                 
 
                 
@@ -228,6 +230,7 @@ class Cadastro_Fornecedor(Screen):
 
                 self.manager.transition.direction = 'down'
                 self.manager.current = 'login'
+            
             elif categoria == "Categoria":
                 self.ids.label_fornecedor.text = "Selecione uma categoria"
             else:
@@ -239,26 +242,30 @@ class Cadastro_Cliente(Screen):
         with open("dados_clientes.txt","r") as clientes:
             lista = clientes.readlines()
             id = len(lista)
-        usuario = (self.ids.usuario_cadastro.text).strip()
-        senha = (self.ids.senha_cadastro.text).strip()
-        cpf = (self.ids.cpf_cadastro.text).strip()
-        email = (self.ids.email_cadastro.text).strip()
+        usuario = self.ids.usuario_cadastro.text
+        senha = self.ids.senha_cadastro.text
+        cpf = self.ids.cpf_cadastro.text
+        email = self.ids.email_cadastro.text
         parada = False
+        mensagem = ""
         for cadastros in lista:
             elemento = cadastros.split(",")
             if (usuario == elemento[1]):
-                self.ids.label_cliente.text += "Usuario já cadastrado, "
-                parada =True     
+                mensagem += "Usuario já cadastrado, "
+                parada = True     
+            
             if(cpf == elemento[3]):
-                self.ids.label_cliente.text += "Cpf já cadastrado, "
+                mensagem  += "Cpf já cadastrado, "
                 parada = True
                 
-            if(email == elemento[4][:-1]):
-                self.ids.label_cliente.text += "Email já cadastrado, "
+            if(email == elemento[4]):
+                mensagem += "Email já cadastrado, "
                 parada = True  
-    
-            if(parada):
-                return
+
+        
+        if(parada):
+            self.ids.label_cliente.text = mensagem
+            return
                 
         with open("dados_clientes.txt","a") as clientes:
             
@@ -266,15 +273,20 @@ class Cadastro_Cliente(Screen):
             
             if(usuario and senha and cpf and email):
                 if(not senha_integridade[0]):
-                    self.ids.label_cliente.text = senha_integridade[1]
-                    return
+                    mensagem += senha_integridade[1] + ', '
+                    parada = True
                 if(not validar_cpf(cpf)):
-                    self.ids.label_cliente.text = "CPF inválido"
-                    return 
+                    mensagem += " CPF inválido, "
+                    parada = True
 
                 if(not validar_email(email)):
-                    self.ids.label_cliente.text = "Email inválido"
+                    mensagem += "Email inválido"
+                    parada = True
+                
+                if(parada):
+                    self.ids.label_cliente.text = mensagem
                     return
+                
                 clientes.write(f'{id},{usuario},{senha},{cpf},{email},0\n')
                 self.manager.transition.direction = 'down'
                 self.manager.current = 'login'
@@ -303,8 +315,8 @@ class Login(Screen):
         global usuario #Nome do usuário  
         global tipo #Se é fornecedor tipo == True, caso não Tipo == False
         flag = False
-        usuario = self.ids.usuario.text.strip()
-        senha = self.ids.senha.text.strip()
+        usuario = self.ids.usuario.text
+        senha = self.ids.senha.text
         tipo = self.ids.box.active
         if(not tipo):
             with open("dados_clientes.txt","r") as dados:
@@ -402,11 +414,11 @@ class Esqueceu(Screen):
                     usuarios = dados.readlines()
                     for cadastro in usuarios:
                         componentes = cadastro.split(",")
-                        email_teste = componentes[5]
+                        email_teste = componentes[5][:-1]
                         if(email_capturado == email_teste):
                             achou = True
                             remetente = 'projetops1si@gmail.com'
-                            senha = 'uwlzjskkfilhzxib'
+                            senha = 'jcgiyyjzzwnhaafk'
                             destinatario = email_capturado
                             assunto = 'Recuperação de Login'
                             tamanho_senha = len(componentes[2])
@@ -420,11 +432,11 @@ class Esqueceu(Screen):
                     usuarios = dados.readlines()
                     for cadastro in usuarios:
                         componentes = cadastro.split(",")
-                        email_teste = componentes[4]
+                        email_teste = componentes[4][:-1]
                         if(email_capturado == email_teste):
                             achou = True
                             remetente = 'projetops1si@gmail.com'
-                            senha = 'uwlzjskkfilhzxib'
+                            senha = 'jcgiyyjzzwnhaafk'
                             destinatario = email_capturado
                             assunto = 'Recuperação de Login'
                             tamanho_senha = len(componentes[2])
@@ -565,7 +577,9 @@ class Painel(Screen):
                         self.ids.aviso_painel.text = "Saldo Insuficiente"
                         return
                     
-                    
+                    saldo = str(float(saldo) - total) + "0"
+                    self.ids.saldo_painel.text = f'Seu saldo: R$ {saldo}'
+                    self.ids.aviso_painel.text = "Compra efetuada"
                     
                     with open("dados_loja.txt","r+") as dados:
                         lista = dados.readlines()
@@ -573,13 +587,6 @@ class Painel(Screen):
                             componentes = lista[i].split(",")
                             nome = componentes[0]
                             if(nome == atual):
-                                temp = int(quantidade)
-                                if(temp > int(componentes[1])):
-                                    self.ids.aviso_painel.text = "Quantidade acima do disponível"
-                                    return
-                                saldo = str(float(saldo) - total) + "0"
-                                self.ids.saldo_painel.text = f'Seu saldo: R$ {saldo}'
-                                self.ids.aviso_painel.text = "Compra efetuada"
                                 componentes[1] = str(int(componentes[1]) - int(quantidade))
                                 lista[i] = ','.join(componentes)
                                 self.auxiliar_todos[j] = ','.join(componentes)
@@ -641,15 +648,6 @@ class Deposito(Screen):
     global saldo
     global cnpj
     
-    
-
-    def user(self):
-        global tipo
-        if(tipo):
-            return "fornecedor"
-        else:
-            return 'cliente'
-
     def on_enter(self):
         self.ids.nome_usuario_fornecedor.text = f'Usuário: {usuario}'
         self.ids.data_fornecedor.text = obter_data_atual()
@@ -716,22 +714,17 @@ class CadastrarProduto(Screen):
         global cnpj
         global categoria
         with open("dados_loja.txt","r+") as loja:
-            nome = (self.ids.nome_produto.text).strip()
-            quantidade = (self.ids.quantidade_produto.text).strip()
-            preco = (self.ids.preco_produto.text).strip()
-            imagem = (self.ids.imagem_produto.text).strip()
-            descricao = (self.ids.descricao.text).strip()
+            nome = self.ids.nome_produto.text
+            quantidade = self.ids.quantidade_produto.text
+            preco = self.ids.preco_produto.text
+            imagem = self.ids.imagem_produto.text
+            descricao = self.ids.descricao.text
             produtos = loja.readlines()
-            try:
-                preco = float(preco)
-            except:
-                self.ids.mensagem_produto.text = "Erro no preço"
-                return
             for linha in produtos:
                 componentes = linha.split(",")
                 nome_atual = componentes[0]
                 cpnj_atual = componentes[5][:-1]        
-                if nome.upper() == nome_atual.upper() and cpnj_atual.upper() == cnpj.upper():
+                if nome.upper() == nome_atual and cpnj_atual == cnpj:
                     self.ids.mensagem_produto.text = ("Produto já cadastrado por sua loja")
                     return    
             if(nome == "" or quantidade == "" or preco == "" or descricao == ""):
@@ -756,7 +749,6 @@ class GerenciarProdutos(Screen):
         
         self.lista_com_todos_os_produtos = list()
         self.lista_so_com_os_nomes_dos_produtos = list()
-        self.ids.aviso_painel.text = ""
         self.ids.empresa_painel.text = f"Gerenciar loja {usuario}"
         print(usuario)
         with open("dados_loja.txt","r+") as dados:
@@ -789,26 +781,18 @@ class GerenciarProdutos(Screen):
             novo_preco = self.ids.preco_painel.text
             nova_quantidade = self.ids.quantidade_painel.text
             atual = self.ids.seletor_painel.text
-
+            
             if atual == "Produtos":
                 return
-            if(nova_quantidade == "" and novo_preco == ""):
-                self.ids.aviso_painel.txt = "Alteração Inválida"
+            if(float(nova_quantidade) < 0 or float(novo_preco) < 0):
                 return
             
             for j in range(len(self.lista_com_todos_os_produtos)):
                 dados = self.lista_com_todos_os_produtos[j].split(",")
                 nome = dados[0]
                 if(nome == atual):
-                    
-                    if(novo_preco != ""):
-                        if(float(nova_quantidade) >= 0):
-                            dados[2] = novo_preco
-                    
-                    if(nova_quantidade != ""):
-                        if(float(novo_preco) >= 0):
-                            dados[1] = nova_quantidade
-                    
+                    dados[1] = nova_quantidade
+                    dados[2] = novo_preco
                     with open("dados_loja.txt","r+") as loja:
                         lista = loja.readlines()
                         for i in range(len(lista)):
@@ -820,6 +804,11 @@ class GerenciarProdutos(Screen):
                                 loja.truncate()
                                 self.ids.mostrar_painel.text = f'Nome: {nome}\nQuantidade: {dados[1]}\nPreço: {dados[2]}\nDescrição: {dados[5]}'
                                 return
+
+
+                    
+
+
         
         except:
             pass
@@ -909,6 +898,7 @@ class GuiaPet(Screen):
     
     def on_enter(self):
         self.ids.dica.text = ""
+        #self.ids.pet_seletor.text = "Selecione seu Pet"
         self.animais = []
         self.nomes = []
         with open("dados_pets.txt","r") as dados:
@@ -920,7 +910,8 @@ class GuiaPet(Screen):
                     self.animais.append(lista[i])
                     self.nomes.append(componentes[1])
         self.ids.pet_seletor.values = self.nomes
-        
+
+
     def mostrar_dicas(self,pet):
         
         dica = {'Caramelinho':"Para manter seu Caramelo saudável e feliz, ofereça uma dieta balanceada, exercícios regulares e visitas ao veterinário. Escove seu pelo periodicamente para reduzir a queda e mantenha a higiene dental em dia para evitar problemas dentários comuns",
@@ -929,19 +920,13 @@ class GuiaPet(Screen):
         
         "Siamês": "Para manter seu Siamês saudável, forneça uma dieta equilibrada, estimule a mente com brinquedos interativos e mantenha as visitas ao veterinário em dia. Escove seu pelo curto regularmente para reduzir a queda e mantenha seus olhos limpos e livres de secreções.",
         
-        "Maine Coon":"Cuide bem do seu Maine Coon com escovações regulares para manter a pelagem longa e densa sem nós. Ofereça uma dieta nutritiva, exercícios diários e visitas regulares ao veterinário. Esteja atento à saúde dental e aos cuidados com as orelhas grandes.",
+        "Maine Coon":"Cuide bem do seu Maine Coon com escovações regulares para manter a pelagem longa e densa sem nós. Ofereça uma dieta nutritiva, exercícios diários e visitas regulares ao veterinário. Esteja atento à saúde dental e aos cuidados com as orelhas grandes."}
         
-        }
         
-        if(pet != "Selecione seu Pet"):
-            id = self.nomes.index(pet)
-            raca = self.animais[id].split(",")[3]
-            self.ids.dica.text = dica[raca[:-1]]
+        id = self.nomes.index(pet)
+        raca = self.animais[id].split(",")[3]
+        self.ids.dica.text = dica[raca[:-1]]
 
-    def voltar(self):
-        self.ids.dica.text = ""
-        self.ids.pet_seletor.text = "Selecione seu Pet"
-        return "cliente"
 
 class WindowManager(ScreenManager):
     pass
