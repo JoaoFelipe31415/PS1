@@ -12,7 +12,9 @@ Funcionalidades:
 
 1 - Cadastros de clientes, fornecedores, pets e produtos
 
-2 - Sistema de Login com verificações
+2- Verificações de campos
+
+2 - Sistema de Login 
 
 3 - Loja e operações de compra e venda básicas
 
