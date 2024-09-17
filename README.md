@@ -12,17 +12,17 @@ Funcionalidades:
 
 1 - Cadastros de clientes, fornecedores, pets e produtos
 
-2- Verificações de campos
+2 - Verificações de campos
 
-2 - Sistema de Login 
+3 - Sistema de Login 
 
-3 - Loja e operações de compra e venda básicas
+4 - Loja e operações de compra e venda básicas
 
-4 - Envio de e-mail
+5 - Envio de e-mail
 
-5 - Gerenciamento de Loja por parte do fornecedor
+6 - Gerenciamento de Loja por parte do fornecedor
 
-6 - Sistema de depósito
+7 - Sistema de depósito
 
 Obs: Para cadastradar um produto juntamente de sua foto passe o caminho absoluto onde a imagem está + nomedaimagem.png (o formato deve ser png)
 Ex: C:\Users\Usario\Downloads\nomedaimagem.png
