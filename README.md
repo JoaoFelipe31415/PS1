@@ -2,10 +2,11 @@ Projeto desenvolvido para a disciplina de Projeto Interdisciplinar para Sistemas
 
 O projeto representa o funcionamento de um e-commerce da área pet através de um aplicativo desktop construído utilizando a linguagem de programação Python, a biblioteca Kivy e outras que serão citadas logo abaixo.
 
-Requisitos
+Requisitos:
 
-Python 3.12.1 (Acesse: https://www.python.org para mais informações sobre a instalação).
-Kivy 2.3.0 (Acesse: https://kivy.org para mais informações sobre a instalação).
+Python 3.12.1 (Acesse: https://www.python.org para mais informações sobre a instalação)
+
+Kivy 2.3.0 (Acesse: https://kivy.org para mais informações sobre a instalação)
 
 Funcionalidades:
 
