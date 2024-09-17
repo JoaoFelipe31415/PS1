@@ -11,10 +11,15 @@ Kivy 2.3.0 (Acesse: https://kivy.org para mais informações sobre a instalaçã
 Funcionalidades:
 
 1 - Cadastros de clientes, fornecedores, pets e produtos
+
 2 - Sistema de Login com verificações
+
 3 - Loja e operações de compra e venda básicas
+
 4 - Envio de e-mail
+
 5 - Gerenciamento de Loja por parte do fornecedor
+
 6 - Sistema de depósito
 
 Obs: Para cadastradar um produto juntamente de sua foto passe o caminho absoluto onde a imagem está + nomedaimagem.png (o formato deve ser png)
