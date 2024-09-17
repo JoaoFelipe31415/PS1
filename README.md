@@ -4,8 +4,8 @@ O projeto representa o funcionamento de um e-commerce da área pet através de u
 
 Requisitos
 
-Python 3.12.1 (Acesse: https://www.python.org para mais informações sobre a instalação)\n
-Kivy 2.3.0 (Acesse: https://kivy.org para mais informações sobre a instalação) 
+Python 3.12.1 (Acesse: https://www.python.org para mais informações sobre a instalação).
+Kivy 2.3.0 (Acesse: https://kivy.org para mais informações sobre a instalação).
 
 Funcionalidades:
 
