@@ -25,6 +25,7 @@ Funcionalidades:
 7 - Sistema de depósito
 
 Obs: Para cadastradar um produto juntamente de sua foto passe o caminho absoluto onde a imagem está + nomedaimagem.png (o formato deve ser png)
+
 Ex: C:\Users\Usario\Downloads\nomedaimagem.png
 
 
